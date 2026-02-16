@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لذت سرعت: لامبورگینی آونتادور</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Vazirmatn', sans-serif;
+        }
+        
+        :root {
+            --primary-color: #ff0000;
+            --secondary-color: #ffcc00;
+            --dark-color: #111;
+            --light-color: #f8f8f8;
+            --gray-color: #333;
+            --transition: all 0.3s ease;
+        }
+        
+        body {
+            background-color: var(--dark-color);
+            color: var(--light-color);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+        
+        /* پس زمینه متحرک */
+        #animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .bg-particle {
+            position: absolute;
+            background-color: rgba(255, 0, 0, 0.1);
+            border-radius: 50%;
+        }
+        
+        /* نوار ناوبری */
+        header {
+            background-color: rgba(0, 0, 0, 0.9);
+            padding: 1rem 2rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            font-weight: 900;
+        }
+        
+        .logo i {
+            color: var(--secondary-color);
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            color: var(--light-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary-color);
+            background-color: rgba(255, 0, 0, 0.1);
+        }
+        
+        /* بخش اصلی */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 2rem;
+            position: relative;
+            margin-top: 70px;
+        }
+        
+        .hero-content h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
+            color: var(--secondary-color);
+        }
+        
+        .hero-content p {
+            font-size: 1.5rem;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            color: #ddd;
+        }
+        
+        /* بخش های محتوا */
+        .section {
+            padding: 5rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: var(--secondary-color);
+            position: relative;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 4px;
+            background-color: var(--primary-color);
+            bottom: -10px;
+            right: 50%;
+            transform: translateX(50%);
+        }
+        
+        .history-content, .design-content, .production-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3rem;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+        
+        .text-content {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .image-content {
+            flex: 1;
+            min-width: 300px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            position: relative;
+            background-color: rgba(50, 50, 50, 0.5);
+            min-height: 300px;
+        }
+        
+        .image-content img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            transition: transform 0.5s ease;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        
+        .image-content img:hover {
+            transform: scale(1.05);
+        }
+        
+        /* نمایشگر لودینگ برای تصاویر */
+        .image-loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(30, 30, 30, 0.9);
+            color: var(--secondary-color);
+            font-size: 1.2rem;
+            z-index: 2;
+        }
+        
+        /* گالری */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .gallery-item {
+            border-radius: 8px;
+            overflow: hidden;
+            height: 250px;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            background-color: rgba(50, 50, 50, 0.5);
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+        
+        /* مشخصات فنی */
+        .specs-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .spec-card {
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 0, 0, 0.2);
+        }
+        
+        .spec-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-color);
+            box-shadow: 0 10px 20px rgba(255, 0, 0, 0.2);
+        }
+        
+        .spec-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        /* توسعه دهنده */
+        .developer {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 4rem 2rem;
+            text-align: center;
+            margin-top: 3rem;
+        }
+        
+        .developer-info {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .developer h3 {
+            font-size: 2rem;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .developer p {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        /* پاورقی */
+        footer {
+            background-color: rgba(0, 0, 0, 0.95);
+            padding: 2rem;
+            text-align: center;
+            margin-top: 3rem;
+        }
+        
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .footer-logo {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        /* دکمه بازگشت به بالا */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            background-color: var(--primary-color);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            z-index: 999;
+        }
+        
+        .back-to-top.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* ریسپانسیو */
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero-content p {
+                font-size: 1.2rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 1rem;
+            }
+            
+            .hero {
+                margin-top: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- پس زمینه متحرک -->
+    <div id="animated-bg"></div>
+    
+    <!-- هدر و نوار ناوبری -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <i class="fas fa-car"></i>
+                <span>آونتادور</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#history">تاریخچه</a></li>
+                <li><a href="#design">طراحی</a></li>
+                <li><a href="#production">تولید</a></li>
+                <li><a href="#gallery">گالری</a></li>
+                <li><a href="#specs">مشخصات</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <!-- بخش اصلی -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>لامبورگینی آونتادور</h1>
+            <p>خودرویی که تعریف جدیدی از ابرخودروها ارائه داد. از اولین ایده تا آخرین مدل تولیدی، داستان یک انقلاب در صنعت خودروسازی.</p>
+            <a href="#history" class="cta-button" style="background-color: #ff0000; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block; margin-top: 20px;">کشف داستان</a>
+        </div>
+    </section>
+    
+    <!-- بخش تاریخچه -->
+    <section id="history" class="section">
+        <h2 class="section-title">تاریخچه و ایده اولیه</h2>
+        <div class="history-content">
+            <div class="text-content">
+                <h3>آغاز یک افسانه</h3>
+                <p>ایده ساخت لامبورگینی آونتادور در سال ۲۰۰۸ شکل گرفت، زمانی که لامبورگینی به دنبال جایگزینی برای مورسیه لاگو بود. شرکت تصمیم گرفت تا یک خودروی کاملاً جدید با طراحی آینده‌نگرانه و فناوری پیشرفته بسازد.</p>
+                <p>نام "آونتادور" از یک گاو نر مبارز اسپانیایی گرفته شده که در سال ۱۹۹۳ لقب "گاو نر مبارز سال" را کسب کرد. این نام در ادامه سنت نامگذاری لامبورگینی بر اساس گاوبازی است.</p>
+                <p>اولین نمایش عمومی آونتادور در نمایشگاه خودروی ژنو در مارس ۲۰۱۱ انجام شد. این خودرو با طراحی خیره‌کننده و مشخصات فنی فوق‌العاده، توجه تمام دنیای خودرو را به خود جلب کرد.</p>
+            </div>
+            <div class="image-content">
+                <div class="image-loading" id="loading1">
+                    <i class="fas fa-spinner fa-spin"></i> در حال بارگذاری تصویر...
+                </div>
+                <img id="img1" src="https://images.pexels.com/photos/2127733/pexels-photo-2127733.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="لامبورگینی آونتادور - نمایشگاه ژنو 2011" loading="lazy" onload="hideLoader('loading1')" onerror="replaceImage(this, 'img1', 'loading1')">
+            </div>
+        </div>
+    </section>
+    
+    <!-- بخش طراحی -->
+    <section id="design" class="section" style="background-color: rgba(20, 20, 20, 0.8);">
+        <h2 class="section-title">طراحی انقلابی</h2>
+        <div class="design-content">
+            <div class="image-content">
+                <div class="image-loading" id="loading2">
+                    <i class="fas fa-spinner fa-spin"></i> در حال بارگذاری تصویر...
+                </div>
+                <img id="img2" src="https://images.pexels.com/photos/3807689/pexels-photo-3807689.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="طراحی داخلی آونتادور" loading="lazy" onload="hideLoader('loading2')" onerror="replaceImage(this, 'img2', 'loading2')">
+            </div>
+            <div class="text-content">
+                <h3>هنر در مهندسی</h3>
+                <p>طراحی آونتادور توسط مرکز طراحی لامبورگینی به رهبری فیلیپو پرینی انجام شد. بدنه تماماً از فیبر کربن ساخته شده و از خطوط تیز و زوایای مشخصی برخوردار است که نشان‌دهنده روحیه جنگنده این خودرو است.</p>
+                <p>درهای سنتی اسپایدر به بالا باز می‌شوند که یکی از ویژگی‌های متمایز لامبورگینی است. این درها نه تنها جذابیت بصری ایجاد می‌کنند، بلکه برای ورود و خروج آسان‌تر در فضاهای تنگ طراحی شده‌اند.</p>
+                <p>طراحی کابین نیز به همان اندازه خارق‌العاده است. ترکیبی از چرم با کیفیت، آلومینیوم و فیبر کربن فضایی به شدت ورزشی و در عین حال لوکس ایجاد کرده است.</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- بخش تولید -->
+    <section id="production" class="section">
+        <h2 class="section-title">تولید و توقف</h2>
+        <div class="production-content">
+            <div class="text-content">
+                <h3>از خط تولید تا موزه</h3>
+                <p>تولید لامبورگینی آونتادور از سال ۲۰۱۱ آغاز شد و تا سال ۲۰۲۲ ادامه یافت. در این مدت ۱۱ ساله، بیش از ۱۱,۰۰۰ دستگاه از این مدل در کارخانه لامبورگینی در سانتاگاتا بولونیا تولید شد.</p>
+                <p>آونتادور در طول حیات خود شاهد چندین مدل مختلف بود: آونتادور، آونتادور رودستر، آونتادور اس، آونتادور اس رودستر، آونتادور SV، آونتادور SV رودستر و در نهایت آونتادور SVJ.</p>
+                <p>در سپتامبر ۲۰۲۲، آخرین آونتادور از خط تولید خارج شد تا جای خود را به جانشین خود، لامبورگینی رونن بدهد. آخرین مدل یک آونتادور LP 780-4 Ultimae Roadster به رنگ آبی خاص بود که به یک مجموعه‌دار خصوصی در سوئیس فروخته شد.</p>
+            </div>
+            <div class="image-content">
+                <div class="image-loading" id="loading3">
+                    <i class="fas fa-spinner fa-spin"></i> در حال بارگذاری تصویر...
+                </div>
+                <img id="img3" src="https://images.pexels.com/photos/4480527/pexels-photo-4480527.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="خط تولید لامبورگینی" loading="lazy" onload="hideLoader('loading3')" onerror="replaceImage(this, 'img3', 'loading3')">
+            </div>
+        </div>
+    </section>
+    
+    <!-- گالری -->
+    <section id="gallery" class="section" style="background-color: rgba(20, 20, 20, 0.8);">
+        <h2 class="section-title">گالری تصاویر</h2>
+        <div class="gallery">
+            <div class="gallery-item">
+                <div class="image-loading" id="loading4">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </div>
+                <img id="img4" src="https://images.pexels.com/photos/2127733/pexels-photo-2127733.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="آونتادور از نمای جلو" loading="lazy" onload="hideLoader('loading4')" onerror="replaceImage(this, 'img4', 'loading4')">
+            </div>
+            <div class="gallery-item">
+                <div class="image-loading" id="loading5">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </div>
+                <img id="img5" src="https://images.pexels.com/photos/358189/pexels-photo-358189.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="آونتادور از نمای کنار" loading="lazy" onload="hideLoader('loading5')" onerror="replaceImage(this, 'img5', 'loading5')">
+            </div>
+            <div class="gallery-item">
+                <div class="image-loading" id="loading6">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </div>
+                <img id="img6" src="https://images.pexels.com/photos/1149831/pexels-photo-1149831.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="موتور V12 آونتادور" loading="lazy" onload="hideLoader('loading6')" onerror="replaceImage(this, 'img6', 'loading6')">
+            </div>
+            <div class="gallery-item">
+                <div class="image-loading" id="loading7">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </div>
+                <img id="img7" src="https://images.pexels.com/photos/3807689/pexels-photo-3807689.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="کابین آونتادور" loading="lazy" onload="hideLoader('loading7')" onerror="replaceImage(this, 'img7', 'loading7')">
+            </div>
+            <div class="gallery-item">
+                <div class="image-loading" id="loading8">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </div>
+                <img id="img8" src="https://images.pexels.com/photos/112460/pexels-photo-112460.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="آونتادور در جاده" loading="lazy" onload="hideLoader('loading8')" onerror="replaceImage(this, 'img8', 'loading8')">
+            </div>
+            <div class="gallery-item">
+                <div class="image-loading" id="loading9">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </div>
+                <img id="img9" src="https://images.pexels.com/photos/1007410/pexels-photo-1007410.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="آونتادور در شب" loading="lazy" onload="hideLoader('loading9')" onerror="replaceImage(this, 'img9', 'loading9')">
+            </div>
+        </div>
+    </section>
+    
+    <!-- مشخصات فنی -->
+    <section id="specs" class="section">
+        <h2 class="section-title">مشخصات فنی</h2>
+        <div class="specs-container">
+            <div class="spec-card">
+                <div class="spec-icon">
+                    <i class="fas fa-tachometer-alt"></i>
+                </div>
+                <h3>سرعت نهایی</h3>
+                <p>۳۵۰ کیلومتر بر ساعت</p>
+                <p>بیشترین سرعت در مدل SVJ</p>
+            </div>
+            <div class="spec-card">
+                <div class="spec-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <h3>قدرت موتور</h3>
+                <p>۷۷۰ اسب بخار</p>
+                <p>موتور V12 طبیعی ۶٫۵ لیتری</p>
+            </div>
+            <div class="spec-card">
+                <div class="spec-icon">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <h3>شتاب ۰-۱۰۰</h3>
+                <p>۲٫۸ ثانیه</p>
+                <p>یکی از سریع‌ترین خودروهای جهان</p>
+            </div>
+            <div class="spec-card">
+                <div class="spec-icon">
+                    <i class="fas fa-cogs"></i>
+                </div>
+                <h3>سیستم انتقال قدرت</h4>
+                <p>۷ دنده نیمه‌خودکار</p>
+                <p>سیستم چهارچرخ محرک</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- بخش توسعه دهنده -->
+    <section class="developer">
+        <div class="developer-info">
+            <h3>توسعه دهنده سایت</h3>
+            <p><strong>امیرحسین کوچک زاده</strong></p>
+            <p>کلاس ۱۰ ریاضی - مدرسه شاهد امام صادق</p>
+            <p>این سایت به عنوان پروژه درسی طراحی و توسعه یافته است.</p>
+            <p style="margin-top: 20px; color: #ffcc00;">"لامبورگینی آونتادور نماد پیشرفت مهندسی و طراحی در صنعت خودروسازی است."</p>
+        </div>
+    </section>
+    
+    <!-- پاورقی -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <i class="fas fa-car"></i> آونتادور
+            </div>
+            <p>سایت اختصاصی لامبورگینی آونتادور - از ایده تا توقف تولید</p>
+            <p style="margin-top: 1rem; color: #aaa;">تمامی حقوق محفوظ است - ۱۴۰۳</p>
+        </div>
+    </footer>
+    
+    <!-- دکمه بازگشت به بالا -->
+    <div class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+    
+    <script>
+        // لیست تصاویر جایگزین در صورت خطا
+        const fallbackImages = [
+            'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjIyIi8+CiAgPHRleHQgeD0iNTAlIiB5PSIzMCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iI2ZmY2MwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkFtYm9yZ2hpbGkgQXZlbnRhZG9yPC90ZXh0PgogIDx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiNmZmZmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5MYW1ib3JnaGluaSBTdXBlciBDYXI8L3RleHQ+CiAgPHBhdGggZD0iTTEwMCwyMDAgQzEwMCwxMDAgMzAwLDUwIDUwMCwyMDAgQzUwMCwzMDAgNzAwLDM1MCA5MDAsMjAwIiBzdHJva2U9IiNmZjAwMDAiIHN0cm9rZS13aWR0aD0iMyIgZmlsbD0ibm9uZSIvPgo8L3N2Zz4K',
+            'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMzMzIi8+CiAgPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iI2ZmMDAwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkxhbWJvcmdoaW5pIExvZ288L3RleHQ+CiAgPGNpcmNsZSBjeD0iMzAwIiBjeT0iMjUwIiByPSI4MCIgc3Ryb2tlPSIjZmZjYzAwIiBzdHJva2Utd2lkdGg9IjUiIGZpbGw9Im5vbmUiLz4KICA8cG9seWdvbiBwb2ludHM9IjMwMCwxNzAgMzUwLDI1MCAyNTAsMjUwIiBmaWxsPSIjZmZjYzAwIi8+Cjwvc3ZnPg=='
+        ];
+        
+        // مخفی کردن لودر
+        function hideLoader(loaderId) {
+            const loader = document.getElementById(loaderId);
+            if (loader) {
+                loader.style.display = 'none';
+            }
+        }
+        
+        // جایگزینی تصویر در صورت خطا
+        function replaceImage(imgElement, imgId, loaderId) {
+            console.log(`تصویر ${imgId} لود نشد، استفاده از تصویر جایگزین`);
+            
+            // مخفی کردن لودر
+            hideLoader(loaderId);
+            
+            // استفاده از تصویر جایگزین SVG
+            const randomIndex = Math.floor(Math.random() * fallbackImages.length);
+            imgElement.src = fallbackImages[randomIndex];
+            imgElement.alt = "تصویر جایگزین لامبورگینی آونتادور";
+            
+            // اگر تصویر جایگزین هم لود نشد
+            imgElement.onerror = function() {
+                console.log(`تصویر جایگزین هم برای ${imgId} لود نشد`);
+                this.style.display = 'none';
+                // نمایش پیام در جای تصویر
+                const container = this.parentElement;
+                const errorMsg = document.createElement('div');
+                errorMsg.innerHTML = '<i class="fas fa-car" style="font-size: 3rem; color: #ffcc00; margin-bottom: 10px;"></i><br><span>تصویر در دسترس نیست</span>';
+                errorMsg.style.position = 'absolute';
+                errorMsg.style.top = '0';
+                errorMsg.style.left = '0';
+                errorMsg.style.width = '100%';
+                errorMsg.style.height = '100%';
+                errorMsg.style.display = 'flex';
+                errorMsg.style.flexDirection = 'column';
+                errorMsg.style.alignItems = 'center';
+                errorMsg.style.justifyContent = 'center';
+                errorMsg.style.color = '#ffcc00';
+                errorMsg.style.backgroundColor = 'rgba(30, 30, 30, 0.9)';
+                container.appendChild(errorMsg);
+            };
+        }
+        
+        // ایجاد پس زمینه متحرک با ذرات
+        function createAnimatedBackground() {
+            const bg = document.getElementById('animated-bg');
+            const colors = [
+                'rgba(255, 0, 0, 0.1)',
+                'rgba(255, 204, 0, 0.1)',
+                'rgba(255, 255, 255, 0.05)',
+                'rgba(0, 255, 255, 0.05)'
+            ];
+            
+            // ایجاد ذرات
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('bg-particle');
+                
+                // اندازه تصادفی
+                const size = Math.random() * 100 + 20;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // موقعیت تصادفی
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // رنگ تصادفی
+                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                
+                // انیمیشن حرکت
+                const duration = Math.random() * 20 + 10;
+                particle.style.animation = `moveParticle ${duration}s linear infinite`;
+                
+                bg.appendChild(particle);
+            }
+            
+            // افزودن استایل انیمیشن
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes moveParticle {
+                    0% {
+                        transform: translate(0, 0) rotate(0deg);
+                    }
+                    25% {
+                        transform: translate(${Math.random() * 50 - 25}px, ${Math.random() * 50 - 25}px) rotate(90deg);
+                    }
+                    50% {
+                        transform: translate(${Math.random() * 50 - 25}px, ${Math.random() * 50 - 25}px) rotate(180deg);
+                    }
+                    75% {
+                        transform: translate(${Math.random() * 50 - 25}px, ${Math.random() * 50 - 25}px) rotate(270deg);
+                    }
+                    100% {
+                        transform: translate(0, 0) rotate(360deg);
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        // دکمه بازگشت به بالا
+        function setupBackToTop() {
+            const backToTopBtn = document.getElementById('backToTop');
+            
+            window.addEventListener('scroll', () => {
+                if (window.pageYOffset > 300) {
+                    backToTopBtn.classList.add('active');
+                } else {
+                    backToTopBtn.classList.remove('active');
+                }
+            });
+            
+            backToTopBtn.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        }
+        
+        // انیمیشن اسکرول نرم برای لینک‌های داخلی
+        function setupSmoothScrolling() {
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        }
+        
+        // افزودن افکت به کارت‌ها هنگام اسکرول
+        function setupScrollAnimations() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+            
+            // مشاهده کارت‌ها و بخش‌ها
+            document.querySelectorAll('.spec-card, .history-content, .design-content, .production-content').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
